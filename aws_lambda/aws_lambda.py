@@ -326,7 +326,6 @@ def create_function(cfg, path_to_zip_file):
     """Register and upload a function to AWS Lambda."""
 
     print("Creating your new Lambda function")
-    byte_stream = read(path_to_zip_file)
     aws_access_key_id = cfg.get('aws_access_key_id')
     aws_secret_access_key = cfg.get('aws_secret_access_key')
 
@@ -345,7 +344,7 @@ def create_function(cfg, path_to_zip_file):
         Runtime=cfg.get('runtime', 'python2.7'),
         Role=role,
         Handler=cfg.get('handler'),
-        Code={'ZipFile': byte_stream},
+        Code={'ZipFile': open(path_to_zip_file, 'rb').read()},
         Description=cfg.get('description'),
         Timeout=cfg.get('timeout', 15),
         MemorySize=cfg.get('memory_size', 512),
@@ -364,7 +363,6 @@ def update_function(cfg, path_to_zip_file):
     """Updates the code of an existing Lambda function"""
 
     print("Updating your Lambda function")
-    byte_stream = read(path_to_zip_file)
     aws_access_key_id = cfg.get('aws_access_key_id')
     aws_secret_access_key = cfg.get('aws_secret_access_key')
 
@@ -376,7 +374,7 @@ def update_function(cfg, path_to_zip_file):
 
     client.update_function_code(
         FunctionName=cfg.get('function_name'),
-        ZipFile=byte_stream,
+        ZipFile=open(path_to_zip_file, 'rb').read(),
         Publish=True
     )
 
